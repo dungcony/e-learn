@@ -1,3 +1,51 @@
 spring:
   application:
     name: E-learning
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/elearning}
+    username: ${DB_USERNAME:elearning}
+    password: ${DB_PASSWORD:elearning}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+# Khóa HS256 dạng base64, tối thiểu 32 byte sau khi giải mã. Bắt buộc cấp qua biến môi trường.
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiry-seconds: 3600
+
+app:
+  mail:
+    from: ${MAIL_FROM:no-reply@elearning.local}
+  auth:
+    # Gốc URL của frontend, dùng dựng link đặt lại mật khẩu: <frontend-url>/reset-password?token=...
+    frontend-url: ${APP_FRONTEND_URL:http://localhost:3000}
+    reset-token-ttl: 60m
+    # Chỉ khi cả hai biến cùng có giá trị và chưa có QTV nào, hệ thống tạo tài khoản QTV đầu tiên lúc khởi động.
+    bootstrap-admin-email: ${APP_ADMIN_EMAIL:}
+    bootstrap-admin-password: ${APP_ADMIN_PASSWORD:}
+  storage:
+    base-dir: ${APP_STORAGE_DIR:./uploads}
+    public-path: /files

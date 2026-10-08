@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -60,6 +61,9 @@ public class SecurityConfig {
                                 "/auth/verify-email", "/auth/resend-verification",
                                 "/auth/google")
                         .permitAll()
+                        // Ảnh đã tải lên và khóa học công khai cho Khách xem (docs/design/course-management/api.md).
+                        .requestMatchers("/files/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/courses", "/courses/*").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

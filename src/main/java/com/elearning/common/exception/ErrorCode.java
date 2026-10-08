@@ -68,6 +68,43 @@ public enum ErrorCode {
     REQUEST_IN_PROGRESS(HttpStatus.CONFLICT, "Yêu cầu trước đó đang được xử lý, vui lòng thử lại sau."),
 
     // ---------------------------------------------------------------------
+    // E-learning — docs/design/README.md mục 2.7
+    // ---------------------------------------------------------------------
+
+    // Ảnh tải lên không phải png, gif, jpg, jpeg.
+    FILE_TYPE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "Chỉ chấp nhận ảnh png, gif, jpg hoặc jpeg."),
+
+    // Mật khẩu xác nhận không trùng mật khẩu mới.
+    AUTH_PASSWORD_CONFIRM_MISMATCH(HttpStatus.BAD_REQUEST, "Mật khẩu xác nhận không trùng với mật khẩu."),
+
+    // Tên thể loại khóa học đã được dùng.
+    COURSE_CATEGORY_NAME_EXISTS(HttpStatus.CONFLICT, "Tên thể loại đã tồn tại."),
+
+    // Xóa thể loại khi còn khóa học thuộc thể loại đó.
+    COURSE_CATEGORY_IN_USE(HttpStatus.CONFLICT, "Thể loại còn khóa học, không thể xóa."),
+
+    // Ngày kết thúc không sau ngày bắt đầu.
+    COURSE_DATE_RANGE_INVALID(HttpStatus.BAD_REQUEST, "Thời gian kết thúc phải sau thời gian bắt đầu."),
+
+    // Câu hỏi trắc nghiệm có số đáp án đúng khác 1.
+    EXERCISE_ANSWER_INVALID(HttpStatus.BAD_REQUEST, "Mỗi câu hỏi phải có đúng một đáp án đúng."),
+
+    // Học viên đã ghi danh khóa học này.
+    ENROLLMENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "Bạn đã đăng ký khóa học này."),
+
+    // Học viên chưa ghi danh khóa học nên không được học.
+    ENROLLMENT_REQUIRED(HttpStatus.FORBIDDEN, "Bạn chưa đăng ký khóa học này."),
+
+    // Chưa tới ngày bắt đầu của khóa học.
+    COURSE_NOT_STARTED(HttpStatus.FORBIDDEN, "Khóa học chưa bắt đầu."),
+
+    // Nộp bài khi còn câu chưa trả lời.
+    SUBMISSION_INCOMPLETE(HttpStatus.BAD_REQUEST, "Cần trả lời hết các câu hỏi trước khi nộp bài."),
+
+    // Lưu tạm hoặc nộp lại bài tập đã nộp.
+    SUBMISSION_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "Bài tập đã được nộp."),
+
+    // ---------------------------------------------------------------------
     // Xác thực & tài khoản — api/01-XAC-THUC.md
     // ---------------------------------------------------------------------
 

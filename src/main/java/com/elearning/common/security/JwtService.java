@@ -58,6 +58,11 @@ public class JwtService {
         this.accessTokenExpirySeconds = accessTokenExpirySeconds;
     }
 
+    // Token chỉ mang sub và authorities (vd ROLE_STUDENT), không có claim plan của dự án cũ.
+    public String generateAccessToken(UUID userId, Collection<String> authorities) {
+        return generateAccessToken(userId, null, authorities, NO_ROLE_LEVEL);
+    }
+
     public String generateAccessToken(UUID userId, String plan) {
         return generateAccessToken(userId, plan, Collections.emptyList(), NO_ROLE_LEVEL);
     }
@@ -68,9 +73,10 @@ public class JwtService {
 
     public String generateAccessToken(UUID userId, String plan, Collection<String> authorities, int topRoleLevel) {
         Instant now = Instant.now();
-        var builder = Jwts.builder()
-                .subject(userId.toString())
-                .claim("plan", plan);
+        var builder = Jwts.builder().subject(userId.toString());
+        if (plan != null) {
+            builder.claim("plan", plan);
+        }
         if (authorities != null && !authorities.isEmpty()) {
             builder.claim("authorities", authorities);
         }
