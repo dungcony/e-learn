@@ -173,6 +173,12 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     @Transactional(readOnly = true)
+    public UUID getCourseIdOfLecture(UUID lectureId) {
+        return lectureRepository.findById(lectureId).orElseThrow(this::lectureNotFound).getCourseId();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public LearningLectureResponse getLearningLecture(UUID lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(this::lectureNotFound);
         List<Exercise> exercises = exerciseRepository.findByLectureIdOrderByCreatedAtAscIdAsc(lectureId);

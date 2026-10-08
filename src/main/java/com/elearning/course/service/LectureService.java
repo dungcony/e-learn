@@ -88,6 +88,13 @@ public interface LectureService {
     List<LectureSummaryResponse> getLectureSummaries(UUID courseId);
 
     /**
+     * API công khai cho {@code learning}: khóa học chứa bài giảng, để kiểm tra quyền học trước khi thao tác.
+     *
+     * @throws com.elearning.common.exception.BusinessException {@code NOT_FOUND} nếu bài giảng không tồn tại hoặc đã xóa
+     */
+    UUID getCourseIdOfLecture(UUID lectureId);
+
+    /**
      * API công khai cho {@code learning}: nội dung bài giảng và bài tập cho học viên, không có đáp án đúng.
      *
      * @throws com.elearning.common.exception.BusinessException {@code NOT_FOUND} nếu bài giảng không tồn tại hoặc đã xóa
