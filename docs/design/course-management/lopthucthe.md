@@ -182,7 +182,7 @@ classDiagram
     class CourseService {
         <<interface>>
         +searchPublicCourses(CourseSearchRequest, PageRequestParams) Page~CourseSummaryResponse~
-        +getCourse(UUID viewerId, UUID id) CourseDetailResponse
+        +getCourse(UUID viewerId, boolean viewerIsAdmin, UUID id) CourseDetailResponse
         +searchTeacherCourses(UUID teacherId, CourseSearchRequest, PageRequestParams) Page~CourseSummaryResponse~
         +createCourse(UUID teacherId, CourseCreateRequest) CourseDetailResponse
         +updateCourse(UUID teacherId, UUID id, CourseUpdateRequest) CourseDetailResponse
@@ -205,6 +205,7 @@ classDiagram
         +updateExercise(UUID teacherId, UUID lectureId, UUID id, ExerciseUpdateRequest) ExerciseDetailResponse
         +deleteExercise(UUID teacherId, UUID lectureId, UUID id) void
         +getLectureSummaries(UUID courseId) List~LectureSummaryResponse~
+        +getCourseIdOfLecture(UUID lectureId) UUID
         +getLearningLecture(UUID lectureId) LearningLectureResponse
         +getExerciseAnswerKey(UUID exerciseId) ExerciseAnswerKey
         +getLectureIds(Collection~UUID~ courseIds) List~CourseLectureIds~
@@ -267,9 +268,10 @@ classDiagram
 Ghi chú:
 
 - Controller trả `ApiResponse` của DTO tương ứng ở `api.md`; diagram lược bớt kiểu trả về của controller cho gọn.
-- `CourseService.getCourse` nhận `viewerId` có thể `null` (Khách). Khóa `PRIVATE` chỉ trả cho giảng viên chủ khóa học.
+- `CourseService.getCourse` nhận `viewerId` có thể `null` (Khách). Khóa `PRIVATE` chỉ trả cho giảng viên chủ khóa học và
+  Quản trị viên (`viewerIsAdmin`), còn lại là `NOT_FOUND` (QĐ1).
 - `getCourseBrief`, `getCourseBriefs`, `searchCourseBriefs`, `getLectureSummaries`, `getLearningLecture`,
-  `getExerciseAnswerKey`, `getLectureIds` là API công khai cho module `learning`. Các hàm này không kiểm tra ghi danh;
+  `getExerciseAnswerKey`, `getLectureIds`, `getCourseIdOfLecture` là API công khai cho module `learning`. Các hàm này không kiểm tra ghi danh;
   `learning` tự kiểm tra trước khi gọi. `searchCourseBriefs` nhận `teacherId = null` để QTV xem mọi khóa học.
 - `CourseLectureIds` là record nội bộ (`courseId`, `lectureIds`): id các bài giảng chưa xóa của từng khóa học, để `learning` tính tiến độ mà không đếm bài giảng đã xóa.
 - `CategoryValidator` gọi `CourseRepository.existsByCategoryId`; `@SQLRestriction` bỏ qua khóa học đã xóa.

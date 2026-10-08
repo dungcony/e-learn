@@ -126,7 +126,8 @@ public class UserServiceImpl implements UserService {
         teacher.setEmail(email);
         teacher.setPasswordHash(passwordEncoder.encode(request.password()));
         teacher.setRole(Role.TEACHER);
-        return userMapper.toDetailResponse(userRepository.save(teacher));
+        // Flush để created_at (gán lúc flush) có giá trị trong response.
+        return userMapper.toDetailResponse(userRepository.saveAndFlush(teacher));
     }
 
     @Override

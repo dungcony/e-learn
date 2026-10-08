@@ -101,7 +101,7 @@ classDiagram
         <<interface>>
         +registerStudent(UserRegisterRequest) ProfileResponse
         +login(UserLoginRequest) AuthResponse
-        +requestPasswordReset(String email) void
+        +requestPasswordReset(PasswordForgotRequest) void
         +resetPassword(PasswordResetRequest) void
     }
 

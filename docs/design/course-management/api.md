@@ -18,7 +18,7 @@ Quy ước URL, response, phân trang và mã lỗi: xem [`../README.md`](../REA
 | Method | URL | Vai trò | Request | Response (`data`) |
 |---|---|---|---|---|
 | GET | `/courses` | Khách, `STUDENT` | Query `CourseSearchRequest` + phân trang | 200 `{items: CourseSummaryResponse[], meta}`, chỉ `PUBLIC` |
-| GET | `/courses/{id}` | Khách, `STUDENT`, `TEACHER` chủ | — | 200 `CourseDetailResponse` |
+| GET | `/courses/{id}` | Khách, `STUDENT`, `TEACHER` chủ, `ADMIN` | — | 200 `CourseDetailResponse` |
 | GET | `/teachers/me/courses` | `TEACHER` | Query `CourseSearchRequest` (có `status`) + phân trang | 200 `{items: CourseSummaryResponse[], meta}` |
 | POST | `/courses` | `TEACHER` | `CourseCreateRequest` | 201 `CourseDetailResponse` |
 | PUT | `/courses/{id}` | `TEACHER` chủ | `CourseUpdateRequest` | 200 `CourseDetailResponse` |

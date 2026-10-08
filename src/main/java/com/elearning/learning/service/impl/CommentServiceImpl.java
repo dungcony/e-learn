@@ -74,7 +74,8 @@ public class CommentServiceImpl implements CommentService {
                         "Chỉ được trả lời bình luận gốc của cùng bài giảng.");
             }
         }
-        Comment comment = commentRepository.save(Comment.builder().id(UUID.randomUUID()).lectureId(lectureId)
+        // Flush để created_at, updated_at (gán lúc flush) có giá trị trong response.
+        Comment comment = commentRepository.saveAndFlush(Comment.builder().id(UUID.randomUUID()).lectureId(lectureId)
                 .userId(studentId).parentId(request.parentId()).content(request.content()).build());
         return learningMapper.toCommentResponse(comment, authors(List.of(studentId)).get(studentId), List.of());
     }
@@ -84,6 +85,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponse updateComment(UUID studentId, UUID id, CommentUpdateRequest request) {
         Comment comment = findOwned(studentId, id);
         comment.setContent(request.content());
+        commentRepository.flush();
         List<Comment> replies = comment.getParentId() != null ? List.of()
                 : commentRepository.findByParentIdInOrderByCreatedAtAscIdAsc(List.of(id));
 

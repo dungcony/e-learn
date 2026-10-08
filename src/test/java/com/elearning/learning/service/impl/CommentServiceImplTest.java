@@ -74,13 +74,13 @@ class CommentServiceImplTest {
         assertThatThrownBy(() -> service.createComment(studentId, lectureId, new CommentCreateRequest("Hi", null)))
                 .isInstanceOfSatisfying(BusinessException.class,
                         e -> assertThat(e.getCode()).isEqualTo("COURSE_NOT_STARTED"));
-        verify(commentRepository, never()).save(any());
+        verify(commentRepository, never()).saveAndFlush(any());
     }
 
     @Test
     void createComment_rootCommentHasNoParentAndAuthorName() {
         stubAccess();
-        when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(commentRepository.saveAndFlush(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
         when(userService.getUserBriefs(anyCollection())).thenReturn(List.of(new UserBriefResponse(studentId, "Học viên", "hv@x.y")));
 
         CommentResponse response = service.createComment(studentId, lectureId, new CommentCreateRequest("Bài này khó", null));
@@ -96,7 +96,7 @@ class CommentServiceImplTest {
         stubAccess();
         Comment root = comment(UUID.randomUUID(), lectureId, null);
         when(commentRepository.findById(root.getId())).thenReturn(Optional.of(root));
-        when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(commentRepository.saveAndFlush(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
         when(userService.getUserBriefs(anyCollection())).thenReturn(List.of());
 
         CommentResponse response = service.createComment(studentId, lectureId, new CommentCreateRequest("Mình giúp", root.getId()));
@@ -112,7 +112,7 @@ class CommentServiceImplTest {
 
         assertThatThrownBy(() -> service.createComment(studentId, lectureId, new CommentCreateRequest("x", reply.getId())))
                 .isInstanceOfSatisfying(BusinessException.class, e -> assertThat(e.getCode()).isEqualTo("VALIDATION_ERROR"));
-        verify(commentRepository, never()).save(any());
+        verify(commentRepository, never()).saveAndFlush(any());
     }
 
     @Test

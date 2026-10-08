@@ -224,13 +224,13 @@ class UserServiceImplTest {
     @Test
     void createTeacher_forcesTeacherRoleLowercasesEmailAndHashesPassword() {
         when(passwordEncoder.encode("teach123")).thenReturn("teacher-hash");
-        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(userRepository.saveAndFlush(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
         UserDetailResponse response = service.createTeacher(new TeacherCreateRequest(
                 "Giảng Viên", "Teacher@Example.com", "teach123", UserStatus.ACTIVE, null, "0911222333", Gender.FEMALE));
 
         ArgumentCaptor<User> saved = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(saved.capture());
+        verify(userRepository).saveAndFlush(saved.capture());
         assertThat(saved.getValue().getRole()).isEqualTo(Role.TEACHER);
         assertThat(saved.getValue().getEmail()).isEqualTo("teacher@example.com");
         assertThat(saved.getValue().getPasswordHash()).isEqualTo("teacher-hash");
@@ -246,7 +246,7 @@ class UserServiceImplTest {
                 new TeacherCreateRequest("GV", "t@x.y", "teach123", UserStatus.ACTIVE, null, null, null)))
                 .isInstanceOfSatisfying(BusinessException.class,
                         e -> assertThat(e.getCode()).isEqualTo("AUTH_EMAIL_ALREADY_EXISTS"));
-        verify(userRepository, never()).save(any());
+        verify(userRepository, never()).saveAndFlush(any());
     }
 
     @Test

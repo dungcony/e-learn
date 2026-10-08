@@ -161,7 +161,8 @@ classDiagram
     }
 
     class ProgressCalculator {
-        +calculate(UUID studentId, Collection~UUID~ courseIds) List~CourseProgress~
+        +forStudent(UUID studentId, Collection~UUID~ courseIds) Map~UUID, Integer~
+        +forCourse(UUID courseId, Collection~UUID~ studentIds) Map~UUID, Integer~
     }
 
     class EnrollmentRepository {
@@ -169,18 +170,22 @@ classDiagram
         +existsByStudentIdAndCourseId(UUID studentId, UUID courseId) boolean
         +findByStudentId(UUID studentId) List~Enrollment~
         +findByCourseId(UUID courseId, Pageable) Page~Enrollment~
-        +countByCourseIdIn(Collection~UUID~ courseIds) List~CourseStudentCount~
+        +countByCourseIds(Collection~UUID~ courseIds) List~CourseStudentCount~
     }
 
     class LectureCompletionRepository {
         <<interface>>
         +existsByStudentIdAndLectureId(UUID studentId, UUID lectureId) boolean
-        +findByStudentIdAndCourseIdIn(UUID studentId, Collection~UUID~ courseIds) List~LectureCompletion~
+        +insertIfAbsent(UUID id, UUID studentId, UUID courseId, UUID lectureId, Instant completedAt) int
+        +findCompletedLectureIds(UUID studentId, Collection~UUID~ courseIds) List~UUID~
+        +findCompletions(UUID courseId, Collection~UUID~ studentIds) List~StudentLectureView~
     }
 
     class SubmissionRepository {
         <<interface>>
         +findByStudentIdAndExerciseId(UUID studentId, UUID exerciseId) Optional~Submission~
+        +findWithLockByStudentIdAndExerciseId(UUID studentId, UUID exerciseId) Optional~Submission~
+        +findByStudentIdAndExerciseIdIn(UUID studentId, Collection~UUID~ exerciseIds) List~Submission~
     }
 
     class CommentRepository {
@@ -226,10 +231,13 @@ Ghi chú:
 
 - Controller trả `ApiResponse` của DTO tương ứng ở `api.md`; diagram lược bớt kiểu trả về của controller cho gọn.
 - `LearningAccessValidator` (thư mục `validator/`) kiểm tra điều kiện học tập theo thứ tự ở `use-case.md`, dùng chung cho học
-  bài, nộp bài và bình luận.
+  bài, nộp bài và bình luận. "Hôm nay" tính bằng bean `Clock` theo múi giờ `app.timezone` (mặc định `Asia/Ho_Chi_Minh`).
 - `ProgressCalculator` (thư mục `helper/`) lấy id bài giảng hiện có qua `LectureService.getLectureIds`, đếm
-  `LectureCompletion` của học viên trong các id đó, nên bài giảng đã xóa không bị tính. `CourseProgress` (`courseId`,
-  `progress`) là record nội bộ.
+  `LectureCompletion` trong các id đó, nên bài giảng đã xóa không bị tính; trả map id khóa học (hoặc id học viên) →
+  tiến độ 0–100.
+- Xác nhận hoàn thành bài giảng dùng `INSERT ... ON CONFLICT DO NOTHING` (`insertIfAbsent`): gọi lại hoặc hai request song
+  song đều thành công mà không tạo bản ghi trùng.
+- Lưu tạm và nộp bài khóa bi quan dòng bài làm (`findWithLockByStudentIdAndExerciseId`, `SELECT ... FOR UPDATE`).
 - `CourseStudentCount` (`courseId`, `studentCount`) là projection của `EnrollmentRepository`.
 - Controller lấy `isAdmin` từ vai trò trong security context. Khi `isAdmin` = false, `getCourseHistories` gọi
   `CourseService.searchCourseBriefs` với `teacherId` của người xem; `getEnrolledStudents` kiểm tra khóa học thuộc giảng viên
