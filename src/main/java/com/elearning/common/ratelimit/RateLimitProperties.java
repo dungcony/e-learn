@@ -19,7 +19,7 @@ import java.util.List;
 public class RateLimitProperties {
 
     public static final List<RateLimitRule> RULES = List.of(
-            new RateLimitRule("auth", "/v1/auth/", 5, Duration.ofMinutes(1), true),
+            new RateLimitRule("auth", "/auth/", 5, Duration.ofMinutes(1), true),
             new RateLimitRule("ai", "/v1/ai/", 30, Duration.ofMinutes(1), false),
             new RateLimitRule("default", "/", 120, Duration.ofMinutes(1), false));
 

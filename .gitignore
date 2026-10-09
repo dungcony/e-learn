@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Ảnh người dùng tải lên (app.storage.base-dir mặc định) ###
+uploads/
+dump.rdb

@@ -87,7 +87,7 @@ sequenceDiagram
     participant Handler as GlobalExceptionHandler
 
     User->>Ctrl: POST /auth/forgot-password (PasswordForgotRequest)
-    Ctrl->>Svc: requestPasswordReset(email)
+    Ctrl->>Svc: requestPasswordReset(PasswordForgotRequest)
     Svc->>UserRepo: findByEmail(email)
 
     alt Không có tài khoản

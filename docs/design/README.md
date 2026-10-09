@@ -164,6 +164,10 @@ Các quy ước thiết kế khác ở những chỗ SRS không nói:
 - Bài giảng chỉ mở cho học viên từ ngày bắt đầu của khóa học (UC016 luồng 4a).
 - Bình luận được trả lời một cấp.
 - Tiến độ khóa học = số bài giảng đã xác nhận hoàn thành / tổng số bài giảng hiện có, tính khi đọc.
+- "Hôm nay" (so với ngày bắt đầu khóa học) tính theo múi giờ `app.timezone`, mặc định `Asia/Ho_Chi_Minh`.
+- Entity có `created_at`, `updated_at` do Hibernate gán lúc flush; service flush trước khi trả response để hai trường này
+  không bị `null` ngay sau khi tạo hoặc sửa.
+- Quản trị viên đầu tiên tạo lúc khởi động từ biến môi trường `APP_ADMIN_EMAIL`, `APP_ADMIN_PASSWORD` (chỉ khi chưa có QTV nào).
 
 ## 4. Lỗi đã biết trong SRS
 

@@ -88,12 +88,12 @@ classDiagram
 
     class NewsRepository {
         <<interface>>
-        +findByTitleContainingIgnoreCase(String title, Pageable) Page~News~
+        +findAll(Specification~News~, Pageable) Page~News~
     }
 
     class FaqRepository {
         <<interface>>
-        +findByQuestionContainingIgnoreCase(String question, Pageable) Page~Faq~
+        +findAll(Specification~Faq~, Pageable) Page~Faq~
     }
 
     class NewsMapper {
@@ -116,3 +116,4 @@ classDiagram
 ```
 
 Controller trả `ApiResponse` của DTO tương ứng ở `api.md`; diagram lược bớt kiểu trả về của controller cho gọn.
+Tìm kiếm dùng `SpecificationUtils.containsIgnoreCase("title" / "question", chuỗi)` của `common/util/`.
