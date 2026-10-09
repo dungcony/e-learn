@@ -1,33 +1,120 @@
-# Kế hoạch thiết kế các module hệ thống E-Learning
+# Kế hoạch khởi tạo Frontend (FE) - E-Learning
 
-Tài liệu SRS đã được đánh giá là **đạt chuẩn**. Để tiến hành thiết kế các module theo kiến trúc Spring Boot, tôi đề xuất chia hệ thống thành 5 module chính. 
+## 1. Các file sẽ tạo mới / thay đổi
 
-Theo yêu cầu của bạn, **mỗi module sẽ được lưu trong một thư mục riêng** và bao gồm 3 file thiết kế:
-1. `use-case.md`: Chứa Kịch bản chi tiết Use case (luồng chuẩn, ngoại lệ) và Test Cases.
-2. `api.md`: Chứa thiết kế RESTful API Endpoint chi tiết và Biểu đồ tuần tự (Sequence Diagram).
-3. `lopthucthe.md`: Chứa thiết kế Lớp thực thể (Entity), Lớp DTO và Biểu đồ lớp (Class Diagram).
+- **Cấu hình dự án Frontend (`FE/`):**
+  - `FE/package.json`: Khai báo dependencies (React 19, TypeScript, Tailwind CSS, Axios, TanStack Query, React Router DOM, Lucide React, React Hook Form, Zod).
+  - `FE/vite.config.ts`: Cấu hình build Vite, alias `@/` trỏ về `src/`, proxy API sang backend Spring Boot (`http://localhost:8080`).
+  - `FE/tsconfig.json`, `FE/tsconfig.app.json`, `FE/tsconfig.node.json`: Cấu hình TypeScript nghiêm ngặt và path alias.
+  - `FE/index.html`: File HTML gốc cho SPA.
+  - `FE/tailwind.config.js`, `FE/postcss.config.js`: Cấu hình Tailwind CSS.
+  - `FE/.env`: Cấu hình biến môi trường kết nối backend (`VITE_API_BASE_URL=http://localhost:8080`).
+  - `FE/.gitignore`: Bỏ qua `node_modules`, `dist`, file môi trường cục bộ.
 
-## Danh sách các thư mục module sẽ tạo (nằm trong `docs/design/`):
+- **Mã nguồn khởi tạo (`FE/src/`):**
+  - `FE/src/main.tsx`: Entry point ứng dụng React, bao bọc QueryClientProvider và Router.
+  - `FE/src/App.tsx`: Điều hướng cơ bản (trang Home, Login).
+  - `FE/src/index.css`: Cấu hình Tailwind CSS và biến CSS design tokens.
+  - `FE/src/types/api.ts`: Định nghĩa Type TypeScript khớp với định dạng Spring Boot (`ApiResponse<T>`, `ErrorResponse`, `PageResponse<T>`).
+  - `FE/src/api/axiosClient.ts`: Cấu hình Axios instance tự động đính kèm Bearer JWT Token và xử lý mã lỗi thống nhất.
+  - `FE/src/lib/utils.ts`: Hàm tiện ích gộp class `cn` cho Tailwind.
 
-### 1. `docs/design/auth-profile/` (Module Xác thực & Tài khoản)
-- Gồm: Đăng nhập (UC001), Thay đổi mật khẩu (UC002), Lấy lại mật khẩu (UC003), Đăng ký (UC004), Cập nhật thông tin cá nhân (UC005).
-- Các file: `use-case.md`, `api.md`, `lopthucthe.md`
+---
 
-### 2. `docs/design/user-management/` (Module Quản lý Người dùng)
-- Gồm: Quản lý giảng viên (UC008), Quản lý học viên (UC010).
-- Các file: `use-case.md`, `api.md`, `lopthucthe.md`
+## 2. Lý do thay đổi
 
-### 3. `docs/design/course-management/` (Module Quản lý Đào tạo)
-- Gồm: Quản lý thể loại khóa học (UC015), Quản lý khóa học (UC009), Quản lý bài giảng & bài tập (UC011).
-- Các file: `use-case.md`, `api.md`, `lopthucthe.md`
+- Thư mục `FE` hiện tại đang trống, chưa có mã nguồn client.
+- Hệ thống cần một ứng dụng SPA (Single Page Application) độc lập bằng React + TypeScript để kết nối với REST API của Spring Boot.
+- Lựa chọn Vite + TypeScript + Tailwind CSS giúp tối ưu tốc độ khởi động, dung lượng nhẹ, dễ phát triển và dễ bảo trì.
 
-### 4. `docs/design/learning/` (Module Học tập của Học viên)
-- Gồm: Đăng ký khóa học, học bài giảng, làm bài tập, thảo luận (UC016), Xem lịch sử (UC014).
-- Các file: `use-case.md`, `api.md`, `lopthucthe.md`
+---
 
-### 5. `docs/design/info-management/` (Module Quản lý Thông tin)
-- Gồm: Quản lý tin tức (UC012), Quản lý FAQ (UC013).
-- Các file: `use-case.md`, `api.md`, `lopthucthe.md`
+## 3. Hướng giải quyết & Code xem trước
 
-## Kế hoạch hành động:
-Nếu bạn đồng ý với cấu trúc thư mục và file như trên, vui lòng gõ "Process" hoặc "Đồng ý" để tôi bắt đầu tạo các file `.md` thiết kế vào dự án.
+### Hướng giải quyết:
+- Chạy khởi tạo khung dự án React TypeScript trong thư mục `FE/`.
+- Cài đặt bộ dependencies cần thiết:
+  - `react-router-dom`: Quản lý định tuyến trang.
+  - `axios`, `@tanstack/react-query`: Gọi API và quản lý cache/state server.
+  - `tailwindcss`, `postcss`, `autoprefixer`, `clsx`, `tailwind-merge`: Hệ thống style giao diện.
+  - `lucide-react`: Bộ icon giao diện hiện đại.
+  - `react-hook-form`, `zod`, `@hookform/resolvers`: Quản lý và kiểm thực form.
+- Thiết lập cấu trúc thư mục chuẩn trong `FE/src/`:
+  - `api/`: Các hàm gọi API theo module (`auth`, `users`, `courses`, `learning`, `info`).
+  - `components/`: UI components dùng chung (Buttons, Inputs, Dialogs, Tables...).
+  - `hooks/`: Custom hooks.
+  - `pages/`: Các màn hình theo từng vai trò (Admin, Giảng viên, Học viên).
+  - `routes/`: Quản lý định tuyến và phân quyền (Public, Private theo Role).
+  - `types/`: Type definitions DTO khớp với backend.
+
+### Code xem trước:
+
+#### Cấu hình Client gọi API (`FE/src/api/axiosClient.ts`):
+```typescript
+import axios from 'axios';
+import type { ApiResponse } from '@/types/api';
+
+const axiosClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// gắn token xác thực vào header nếu có
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// chuẩn hóa dữ liệu trả về theo format Spring Boot
+axiosClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    // xử lý lỗi trả về từ GlobalExceptionHandler của backend
+    const errorResponse = error.response?.data;
+    return Promise.reject(errorResponse || error);
+  }
+);
+
+export default axiosClient;
+```
+
+#### Định nghĩa Type đồng bộ Backend (`FE/src/types/api.ts`):
+```typescript
+// cấu trúc response chuẩn từ ApiResponse<T>
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  msg: string;
+}
+
+// cấu trúc lỗi chuẩn từ ErrorResponse
+export interface ErrorDetail {
+  code: string;
+  message: string;
+  fields?: Record<string, string>;
+  detail?: string;
+}
+
+export interface ErrorResponse {
+  success: false;
+  error: ErrorDetail;
+}
+
+// cấu trúc phân trang chuẩn PageResponse<T>
+export interface PageMeta {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface PageResponse<T> {
+  items: T[];
+  meta: PageMeta;
+}
+```
