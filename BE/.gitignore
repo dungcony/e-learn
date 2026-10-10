@@ -35,3 +35,6 @@ build/
 ### Ảnh người dùng tải lên (app.storage.base-dir mặc định) ###
 uploads/
 dump.rdb
+
+### Biến môi trường cục bộ (run-be.ps1 nạp file này) ###
+.env.local
